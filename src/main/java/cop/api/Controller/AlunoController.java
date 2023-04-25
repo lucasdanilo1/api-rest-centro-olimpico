@@ -1,6 +1,7 @@
 package cop.api.Controller;
 
 import cop.api.Model.Aluno.Aluno;
+import cop.api.Model.Aluno.DTO.AlunoDetalhado;
 import cop.api.Model.Aluno.DTO.DadosAtualizaAluno;
 import cop.api.Model.Aluno.Repository.AlunoRepository;
 import cop.api.Model.Aluno.Status;
@@ -30,6 +31,7 @@ public class AlunoController {
     @PutMapping("selecionar/{id}")
     public ResponseEntity seleciona(@PathVariable Long id){
         Aluno aluno = repository.getReferenceById(id);
+        aluno.selecionaAluno();
         return ResponseEntity.noContent().build();
     }
 
@@ -48,8 +50,7 @@ public class AlunoController {
     @GetMapping("/{id}")
     public ResponseEntity detalhar(@PathVariable Long id){
         Aluno aluno = repository.getReferenceById(id);
-        Turma turma = aluno.getTurma();
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(new AlunoDetalhado(aluno));
     }
 
 

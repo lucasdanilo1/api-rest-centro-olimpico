@@ -1,15 +1,17 @@
 package cop.api.Controller;
 
-import cop.api.Model.Aluno.Aluno;
+import cop.api.Model.Aluno.DTO.DadosListagemAluno;
 import cop.api.Model.Aluno.DTO.FiltroAlunos;
 import cop.api.Model.Aluno.Repository.AlunoRepository;
 import cop.api.Model.Turma.DTO.DadosCadastroTurma;
+import cop.api.Model.Turma.DTO.DadosListagemTurma;
 import cop.api.Model.Turma.DTO.FiltroTurmas;
 import cop.api.Model.Turma.Repository.TurmaRepository;
 import cop.api.Model.Turma.Turma;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,27 +35,27 @@ public class SistemaController {
     }
 
     @GetMapping("listaTurmas")
-    public ResponseEntity listaTurma() {
-        List<Turma> turmas = turmaRepository.findAll();
-        return ResponseEntity.ok("");
+    public ResponseEntity<List<DadosListagemTurma>> listaTurma(Pageable paginacao) {
+        var page = turmaRepository.findAll(paginacao).map(DadosListagemTurma::new).toList();
+        return ResponseEntity.ok(page);
     }
 
     @PostMapping("listaTurmas")
-    public ResponseEntity listaTurmasFiltrada(FiltroTurmas filtros){
-        List<Turma> turmas = turmaRepository.findByFiltros(filtros.getModalidade(), filtros.getDias(), filtros.getFaixa(), filtros.getHorario(), filtros.getNaipe());
-        return ResponseEntity.ok("");
+    public ResponseEntity<List<DadosListagemTurma>> listaTurmasFiltrada(@RequestBody FiltroTurmas filtros){
+        var turmas = turmaRepository.findByFiltros(filtros.getModalidade(), filtros.getDias(), filtros.getFaixa(), filtros.getHorario(), filtros.getNaipe()).stream().map(DadosListagemTurma::new).toList();
+        return ResponseEntity.ok(turmas);
     }
 
     @GetMapping("listaInscritos")
-    public ResponseEntity listaInscritos() {
-        List<Aluno> alunos = alunoRepository.findAll();
-        return ResponseEntity.ok("");
+    public ResponseEntity<List<DadosListagemAluno>> listaInscritos(Pageable paginacao) {
+        var page = alunoRepository.findAll(paginacao).map(DadosListagemAluno::new).toList();
+        return ResponseEntity.ok(page);
     }
 
     @PostMapping("listaInscritos")
-    public ResponseEntity listaInscritosFiltrada(FiltroAlunos dados){
-        List<Aluno> alunos = alunoRepository.findByTodosFiltros(dados.getNome(), dados.getModalidade(), dados.getStatus(), dados.getEtnia(), dados.getSexo());
-        return ResponseEntity.ok("");
+    public ResponseEntity<List<DadosListagemAluno>> listaInscritosFiltrada(@RequestBody FiltroAlunos dados){
+        var alunos = alunoRepository.findByTodosFiltros(dados.getNome(), dados.getModalidade(), dados.getStatus(), dados.getEtnia(), dados.getSexo()).stream().map(DadosListagemAluno::new).toList();
+        return ResponseEntity.ok(alunos);
     }
 
 }
