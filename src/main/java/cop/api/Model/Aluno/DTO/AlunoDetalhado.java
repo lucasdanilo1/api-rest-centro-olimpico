@@ -2,7 +2,9 @@ package cop.api.Model.Aluno.DTO;
 
 import cop.api.Model.Aluno.Aluno;
 import cop.api.Model.Aluno.DadosPessoais;
+import lombok.Getter;
 
+@Getter
 public class AlunoDetalhado {
 
     Long turmaId;

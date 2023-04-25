@@ -1,10 +1,13 @@
 package cop.api.Controller;
 
 import cop.api.Model.Aluno.Aluno;
+import cop.api.Model.Aluno.DTO.AlunoDetalhado;
+import cop.api.Model.Aluno.DTO.DadosListagemAluno;
 import cop.api.Model.Aluno.Repository.AlunoRepository;
 import cop.api.Model.Turma.*;
 import cop.api.Model.Turma.DTO.DadosAtualizaTurma;
 import cop.api.Model.Turma.DTO.FiltroTurmas;
+import cop.api.Model.Turma.DTO.TurmaDetalhada;
 import cop.api.Model.Turma.Repository.TurmaRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -25,10 +28,11 @@ public class TurmaController {
     AlunoRepository alunoRepository;
 
     @GetMapping("/{id}")
-    public ResponseEntity turma(@PathVariable Long id){
+    public ResponseEntity detalhar(@PathVariable Long id){
         Turma turma = repository.getReferenceById(id);
-        List<Aluno> alunos = alunoRepository.findAllByTurmaId(id);
-        return ResponseEntity.ok("");
+        List<DadosListagemAluno> inscritos = alunoRepository.findAllByTurmaId(id).stream().map(DadosListagemAluno::new).toList();
+        TurmaDetalhada turmaDetalhada = new TurmaDetalhada(turma, inscritos);
+        return ResponseEntity.ok(turmaDetalhada);
     }
 
     @PostMapping("/{id}")

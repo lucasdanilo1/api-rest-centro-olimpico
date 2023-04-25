@@ -1,5 +1,6 @@
 package cop.api.Model.Aluno;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import cop.api.Model.Aluno.DTO.DadosAtualizaAluno;
 import cop.api.Model.Aluno.DTO.DadosCadastroAluno;
 import cop.api.Model.Turma.Turma;
@@ -28,7 +29,7 @@ public class Aluno {
     @Transient
     private VerificadorDeAlunoParaTurma verificaAluno = new VerificadorDeAlunoParaTurma();
     @Transient
-    public AlunoManager manager = new AlunoManager();;
+    public AlunoManager manager = new AlunoManager();
     @ManyToOne
     Turma turma;
     @Enumerated(EnumType.STRING)
