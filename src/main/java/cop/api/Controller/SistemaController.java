@@ -6,6 +6,7 @@ import cop.api.Model.Aluno.Repository.AlunoRepository;
 import cop.api.Model.Turma.DTO.DadosCadastroTurma;
 import cop.api.Model.Turma.DTO.DadosListagemTurma;
 import cop.api.Model.Turma.DTO.FiltroTurmas;
+import cop.api.Model.Turma.DTO.TurmaDetalhada;
 import cop.api.Model.Turma.Repository.TurmaRepository;
 import cop.api.Model.Turma.Turma;
 import jakarta.transaction.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -27,11 +29,12 @@ public class SistemaController {
     TurmaRepository turmaRepository;
 
     @Transactional
-    @PostMapping("criarTurma")
-    public ResponseEntity cadastroTurma(@RequestBody @Valid DadosCadastroTurma dados) {
+    @PostMapping("novaTurma")
+    public ResponseEntity novaTurma(@RequestBody @Valid DadosCadastroTurma dados, UriComponentsBuilder uriBuilder) {
         Turma turma = new Turma(dados);
         turmaRepository.save(turma);
-        return ResponseEntity.ok("");
+        var uri = uriBuilder.path("sistema/turmas/{id}").buildAndExpand(turma.getId()).toUri();
+        return ResponseEntity.created(uri).body(new TurmaDetalhada(turma));
     }
 
     @GetMapping("listaTurmas")

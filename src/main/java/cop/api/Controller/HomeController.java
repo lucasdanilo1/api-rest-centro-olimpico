@@ -1,6 +1,7 @@
 package cop.api.Controller;
 
 import cop.api.Model.Aluno.Aluno;
+import cop.api.Model.Aluno.DTO.AlunoDetalhado;
 import cop.api.Model.Aluno.DTO.DadosCadastroAluno;
 import cop.api.Model.Aluno.Repository.AlunoRepository;
 import cop.api.Model.Exceptions.AlunoJaCadastradoException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("sigecop")
@@ -27,7 +29,7 @@ public class HomeController {
 
     @Transactional
     @PostMapping("cadastro")
-    public ResponseEntity cadastrarAluno(@RequestBody @Valid DadosCadastroAluno dados) throws Exception {
+    public ResponseEntity cadastrarAluno(@RequestBody @Valid DadosCadastroAluno dados, UriComponentsBuilder uriBuilder) throws Exception {
         if(alunoRepository.existsByDadosPessoaisCpf(dados.getDadosPessoais().getCpf())){
             throw new AlunoJaCadastradoException();
         }else {
@@ -35,8 +37,10 @@ public class HomeController {
             Aluno aluno = new Aluno(dados);
             aluno.setTurma(turma);
             alunoRepository.save(aluno);
+
+            var uri = uriBuilder.path("sistema/inscritos/{id}").buildAndExpand(aluno.getId()).toUri();
+            return ResponseEntity.created(uri).body(new AlunoDetalhado(aluno));
         }
-        return ResponseEntity.ok("");
     }
 
 }

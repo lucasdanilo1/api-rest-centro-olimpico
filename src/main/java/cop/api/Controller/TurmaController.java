@@ -1,7 +1,5 @@
 package cop.api.Controller;
 
-import cop.api.Model.Aluno.Aluno;
-import cop.api.Model.Aluno.DTO.AlunoDetalhado;
 import cop.api.Model.Aluno.DTO.DadosListagemAluno;
 import cop.api.Model.Aluno.Repository.AlunoRepository;
 import cop.api.Model.Turma.*;
@@ -28,26 +26,26 @@ public class TurmaController {
     AlunoRepository alunoRepository;
 
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id){
+    public ResponseEntity<TurmaDetalhada> detalhar(@PathVariable Long id){
         Turma turma = repository.getReferenceById(id);
         List<DadosListagemAluno> inscritos = alunoRepository.findAllByTurmaId(id).stream().map(DadosListagemAluno::new).toList();
-        TurmaDetalhada turmaDetalhada = new TurmaDetalhada(turma, inscritos);
-        return ResponseEntity.ok(turmaDetalhada);
-    }
-
-    @PostMapping("/{id}")
-    public ResponseEntity alunosFiltrados(@PathVariable Long id, @RequestBody FiltroTurmas filtros){
-        Turma turma = repository.getReferenceById(id);
-        List<Aluno> alunos = alunoRepository.findByIdNomeModalidadeStatus(id, filtros.getNome(), turma.getDadosTurma().getModalidade(), filtros.getStatus());
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(new TurmaDetalhada(turma, inscritos));
     }
 
     @Transactional
     @PutMapping("edit/{id}")
-    public ResponseEntity editarTurma(@PathVariable Long id, @RequestBody @Valid DadosAtualizaTurma dados){
+    public ResponseEntity<TurmaDetalhada> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaTurma dados){
         Turma turma = repository.getReferenceById(id);
         turma.atualizaInformacoes(dados);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(new TurmaDetalhada(turma));
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<List<DadosListagemAluno>> filtroListaDeAlunosNaTurma(@PathVariable Long id, @RequestBody FiltroTurmas filtros){
+        Turma turma = repository.getReferenceById(id);
+        List<DadosListagemAluno> alunos = alunoRepository.findByIdNomeModalidadeStatus
+                (id, filtros.getNome(), turma.getDadosTurma().getModalidade(), filtros.getStatus()).stream().map(DadosListagemAluno::new).toList();
+        return ResponseEntity.ok(alunos);
     }
 
 }

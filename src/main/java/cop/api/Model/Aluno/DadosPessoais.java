@@ -48,16 +48,16 @@ public class DadosPessoais {
     }
 
     public void checaCamposDadosPessoaisAtualiza(DadosAtualizaAluno dados){
-        if(!dados.getDadosPessoais().getNome().isEmpty()){
+        if(dados.getDadosPessoais().getNome() != null){
             this.nome = dados.getDadosPessoais().getNome();
         }
-        if(!dados.getDadosPessoais().getEndereco().isEmpty()){
+        if(dados.getDadosPessoais().getEndereco() != null){
             this.endereco = dados.getDadosPessoais().getEndereco();
         }
         if(dados.getDadosPessoais().getEtnia() != null){
             this.etnia = dados.getDadosPessoais().getEtnia();
         }
-        if(!dados.getDadosPessoais().getCpf().isEmpty()){
+        if(dados.getDadosPessoais().getCpf() != null){
             this.cpf = dados.getDadosPessoais().getCpf();
         }
         if(dados.getDadosPessoais().getNaturalidade() != null){
@@ -69,13 +69,13 @@ public class DadosPessoais {
         if(dados.getDadosPessoais().getRegiao() != null){
             this.regiao = dados.getDadosPessoais().getRegiao();
         }
-        if(!dados.getDadosPessoais().getNomeDaMae().isEmpty()){
+        if(dados.getDadosPessoais().getNomeDaMae() != null){
             this.nomeMae = dados.getDadosPessoais().getNomeDaMae();
         }
-        if(!dados.getDadosPessoais().getTelefone().isEmpty()){
+        if(dados.getDadosPessoais().getTelefone() != null){
             this.telefone = dados.getDadosPessoais().getTelefone();
         }
-        if(!dados.getDadosPessoais().getEmail().isEmpty()){
+        if(dados.getDadosPessoais().getEmail() != null){
             this.email = dados.getDadosPessoais().getEmail();
         }
         if(dados.getDadosPessoais().getAnoNascimento() != null){
