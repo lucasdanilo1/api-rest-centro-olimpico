@@ -1,6 +1,5 @@
 package cop.api.Model.Aluno;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import cop.api.Model.Aluno.DTO.DadosAtualizaAluno;
 import cop.api.Model.Aluno.DTO.DadosCadastroAluno;
 import cop.api.Model.Turma.Turma;

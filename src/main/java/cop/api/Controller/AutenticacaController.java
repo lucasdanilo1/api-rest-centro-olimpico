@@ -1,6 +1,8 @@
 package cop.api.Controller;
 
+import cop.api.Infra.Security.TokenService;
 import cop.api.Model.Usuario.DTO.DadosValidacao;
+import cop.api.Model.Usuario.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,17 @@ public class AutenticacaController {
     @Autowired
     private AuthenticationManager manager;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("login")
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosValidacao dados){
-        var token = new UsernamePasswordAuthenticationToken(dados.getLogin(), dados.getSenha());
-        var authentication = manager.authenticate(token);
+        var authenticationToken = new UsernamePasswordAuthenticationToken(dados.getLogin(), dados.getSenha());
+        var authentication = manager.authenticate(authenticationToken);
 
-        return ResponseEntity.ok().build();
+        var token = tokenService.gerarToken((Usuario) authentication.getPrincipal());
+
+        return ResponseEntity.ok(token);
     }
 
 
