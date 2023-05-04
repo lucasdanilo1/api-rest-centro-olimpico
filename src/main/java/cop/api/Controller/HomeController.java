@@ -26,7 +26,6 @@ public class HomeController {
     @Autowired
     private TurmaRepository turmaRepository;
 
-
     @Transactional
     @PostMapping("cadastro")
     public ResponseEntity cadastrarAluno(@RequestBody @Valid DadosCadastroAluno dados, UriComponentsBuilder uriBuilder) throws Exception {
@@ -42,5 +41,4 @@ public class HomeController {
             return ResponseEntity.created(uri).body(new AlunoDetalhado(aluno));
         }
     }
-
 }
