@@ -25,6 +25,8 @@ public class AutenticacaController {
 
     @PostMapping("login")
     public ResponseEntity efetuarLogin(@RequestBody @Valid DadosValidacao dados){
+
+        //spring
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.getLogin(), dados.getSenha());
         var authentication = manager.authenticate(authenticationToken);
 
