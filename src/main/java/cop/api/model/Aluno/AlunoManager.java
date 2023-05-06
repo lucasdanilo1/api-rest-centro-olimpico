@@ -1,63 +1,78 @@
 package cop.api.model.Aluno;
 
+import cop.api.exceptions.IdadeIncompativelException;
+import cop.api.exceptions.SexoIncompativelException;
 import cop.api.exceptions.StatusAlunoException;
+import cop.api.exceptions.TurmaFechadaException;
 import cop.api.model.Aluno.enums.Status;
 import cop.api.model.Turma.Turma;
-import cop.api.util.VerificadorDeAlunoParaTurma;
+import cop.api.model.Turma.enums.StatusTurma;
 
 public class AlunoManager {
 
-    private final VerificadorDeAlunoParaTurma verificaAluno = new VerificadorDeAlunoParaTurma();
+    //verifica elegibilidade de aluno na nova turma
+    public void verificarElegibilidade(Turma turma, Aluno aluno) throws IdadeIncompativelException, SexoIncompativelException, TurmaFechadaException {
+        if (turma.getDadosTurma().getFaixa().permiteIdade(aluno.getDadosPessoais().getIdade())) {
+        } else{
+            throw new IdadeIncompativelException();
+        }
+        if (turma.getDadosTurma().getNaipe().name().equals(aluno.getDadosPessoais().getSexo().name()) || turma.getDadosTurma().getNaipe().name().equals("MISTO")) {
+        } else{
+            throw new SexoIncompativelException();
+        }
+        if (turma.getStatus().equals(StatusTurma.TURMA_ABERTA)) {
+            alteraTurma(turma, aluno);
+        } else {
+            throw new TurmaFechadaException();
+        }
+    }
 
     public void inativaAluno(Aluno aluno){
-        if(aluno.getStatusAluno().equals(Status.SELECIONADO) || aluno.getStatusAluno().equals(Status.MATRICULADO)){
-            aluno.turmaAtual().getMatriculados().remove(aluno);
-            aluno.turmaAtual().getInscritos().add(aluno);
-            aluno.setStatusAluno(Status.INATIVADO);
-            aluno.ativo = false;
+        if(aluno.getStatus().equals(Status.SELECIONADO) || aluno.getStatus().equals(Status.MATRICULADO)){
+            aluno.getTurma().getMatriculados().remove(aluno);
+            aluno.getTurma().getInscritos().add(aluno);
+            aluno.setStatus(Status.INATIVADO);
+            aluno.setAtivo(false);
         }else{
-            aluno.setStatusAluno(Status.INATIVADO);
-            aluno.ativo = false;
+            aluno.setStatus(Status.INATIVADO);
+            aluno.setAtivo(false);
         }
     }
 
     public void ativaAluno(Aluno aluno){
-        if(aluno.getStatusAluno() != Status.INATIVADO){
+        if(aluno.getStatus() != Status.INATIVADO){
             throw new StatusAlunoException("Aluno deve estar Inativado");
         }
-        aluno.setStatusAluno(Status.INSCRITO);
+        aluno.setStatus(Status.INSCRITO);
         aluno.setAtivo(true);
     }
 
     public void selecionaAluno(Aluno aluno){
-        if(aluno.getStatusAluno() != Status.INSCRITO){
+        if(aluno.getStatus() != Status.INSCRITO){
             throw new StatusAlunoException("Aluno deve estar Inscrito");
         }
-        aluno.turmaAtual().getInscritos().remove(aluno);
-        aluno.turmaAtual().getMatriculados().add(aluno);
-        aluno.setStatusAluno(Status.SELECIONADO);
+        aluno.getTurma().getInscritos().remove(aluno);
+        aluno.getTurma().getMatriculados().add(aluno);
+        aluno.setStatus(Status.SELECIONADO);
     }
 
     public void matriculaAluno(Aluno aluno) {
-        if (aluno.getStatusAluno() != Status.SELECIONADO) {
+        if (aluno.getStatus() != Status.SELECIONADO) {
             throw new StatusAlunoException("Aluno deve estar Selecionado");
         }
-        aluno.setStatusAluno(Status.MATRICULADO);
+        aluno.setStatus(Status.MATRICULADO);
     }
 
     public void alteraTurma(Turma novaTurma, Aluno aluno){
 
-        verificaAluno.verificarElegibilidade(novaTurma, aluno);
+        verificarElegibilidade(novaTurma, aluno);
 
-        if(aluno.getStatusAluno().equals(Status.INSCRITO) || aluno.getStatusAluno().equals(Status.INATIVADO)){
-            aluno.turmaAtual().getInscritos().remove(aluno);
+        if(aluno.getStatus().equals(Status.INSCRITO) || aluno.getStatus().equals(Status.INATIVADO)){
+            aluno.getTurma().getInscritos().remove(aluno);
         }else{
-            aluno.turmaAtual().getMatriculados().remove(aluno);
+            aluno.getTurma().getMatriculados().remove(aluno);
         }
-        aluno.setStatusAluno(Status.INSCRITO);
+        aluno.setStatus(Status.INSCRITO);
         novaTurma.getInscritos().add(aluno);
     }
-
-
-
 }

@@ -16,7 +16,7 @@ public class DadosListagemAluno {
     public DadosListagemAluno(Aluno aluno){
         this.dataEnvio = aluno.getDataEnvio();
         this.nome = aluno.getDadosPessoais().getNome();
-        this.status = aluno.getStatusAluno();
+        this.status = aluno.getStatus();
         this.turmaId = aluno.getTurma().getId();
     }
 

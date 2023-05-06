@@ -3,8 +3,8 @@ package cop.api.controller;
 import cop.api.model.Aluno.Aluno;
 import cop.api.model.Aluno.DTO.AlunoDetalhado;
 import cop.api.model.Aluno.DTO.DadosAtualizaAluno;
-import cop.api.model.Aluno.enums.Status;
 import cop.api.repository.AlunoRepositoryImpl;
+import cop.api.service.AlunoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +17,8 @@ public class AlunoController {
 
     @Autowired
     private AlunoRepositoryImpl repository;
+    @Autowired
+    private AlunoService service;
 
     @GetMapping("/{id}")
     public ResponseEntity<AlunoDetalhado> detalhar(@PathVariable Long id){
@@ -28,7 +30,7 @@ public class AlunoController {
     @PutMapping("/{id}")
     public ResponseEntity<AlunoDetalhado> atualizar(@PathVariable Long id, @Valid @RequestBody DadosAtualizaAluno dados){
         Aluno aluno = repository.getReferenceById(id);
-        aluno.atualizaInformacoes(dados);
+        service.atualizaInformacoes(aluno, dados);
         return ResponseEntity.ok(new AlunoDetalhado(aluno));
     }
 
@@ -36,15 +38,23 @@ public class AlunoController {
     @PutMapping("selecionar/{id}")
     public ResponseEntity selecionar(@PathVariable Long id){
         Aluno aluno = repository.getReferenceById(id);
-        aluno.selecionaAluno();
+        service.seleciona(aluno);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Transactional
+    @PutMapping("ativar/{id}")
+    public ResponseEntity ativa(@PathVariable Long id){
+        Aluno aluno = repository.getReferenceById(id);
+        service.ativa(aluno);
         return ResponseEntity.noContent().build();
     }
 
     @Transactional
     @DeleteMapping("inativar/{id}")
-    public ResponseEntity InativaAtiva(@PathVariable Long id){
+    public ResponseEntity inativa(@PathVariable Long id){
         Aluno aluno = repository.getReferenceById(id);
-        aluno.InativaAtivaAluno();
+        service.inativa(aluno);
         return ResponseEntity.noContent().build();
     }
 

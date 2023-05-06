@@ -7,6 +7,7 @@ import cop.api.model.Turma.DTO.FiltroTurmas;
 import cop.api.model.Turma.DTO.TurmaDetalhada;
 import cop.api.repository.AlunoRepositoryImpl;
 import cop.api.repository.TurmaRepositoryImpl;
+import cop.api.service.TurmaService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ public class TurmaController {
     TurmaRepositoryImpl repository;
     @Autowired
     AlunoRepositoryImpl alunoRepository;
+    @Autowired
+    TurmaService service;
 
     @GetMapping("/{id}")
     public ResponseEntity<TurmaDetalhada> detalhar(@PathVariable Long id){
@@ -36,7 +39,7 @@ public class TurmaController {
     @PutMapping("edit/{id}")
     public ResponseEntity<TurmaDetalhada> atualizar(@PathVariable Long id, @RequestBody @Valid DadosAtualizaTurma dados){
         Turma turma = repository.getReferenceById(id);
-        turma.atualizaInformacoes(dados);
+        service.atualizaInformacoes(turma, dados);
         return ResponseEntity.ok(new TurmaDetalhada(turma));
     }
 
