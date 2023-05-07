@@ -22,6 +22,7 @@ public class Turma {
     private String nome;
     @Embedded
     private DadosTurma dadosTurma;
+    @Enumerated(EnumType.STRING)
     private StatusTurma status;
     @OneToMany(mappedBy = "turma")
     private List<Aluno> inscritos = new ArrayList<>();
@@ -34,5 +35,10 @@ public class Turma {
         this.status = StatusTurma.TURMA_ABERTA;
         this.dadosTurma = new DadosTurma(dados);
     }
+
+    public List<Aluno> getInscritos() {
+        return inscritos;
+    }
+
 }
 

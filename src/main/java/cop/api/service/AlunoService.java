@@ -12,6 +12,7 @@ public class AlunoService {
 
     @Autowired
     AlunoManager manager;
+
     public void ativa(Aluno aluno) {
         manager.ativaAluno(aluno);
     }
@@ -28,9 +29,10 @@ public class AlunoService {
         manager.matriculaAluno(aluno);
     }
 
-    public void alteraTurma(Turma turma, Aluno aluno) {
-        manager.alteraTurma(turma, aluno);
+    public void setTurma(Turma turma, Aluno aluno) {
+        aluno.setTurma(turma);
     }
+
     public void atualizaInformacoes(Aluno aluno, DadosAtualizaAluno dados) {
         if (dados.getDadosPessoais() != null) {
             aluno.getDadosPessoais().checaCamposDadosPessoaisAtualiza(dados);

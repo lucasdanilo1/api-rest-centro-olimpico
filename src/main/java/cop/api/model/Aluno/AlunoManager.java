@@ -1,31 +1,12 @@
 package cop.api.model.Aluno;
 
-import cop.api.exceptions.IdadeIncompativelException;
-import cop.api.exceptions.SexoIncompativelException;
 import cop.api.exceptions.StatusAlunoException;
-import cop.api.exceptions.TurmaFechadaException;
 import cop.api.model.Aluno.enums.Status;
 import cop.api.model.Turma.Turma;
-import cop.api.model.Turma.enums.StatusTurma;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AlunoManager {
-
-    //verifica elegibilidade de aluno na nova turma
-    public void verificarElegibilidade(Turma turma, Aluno aluno) throws IdadeIncompativelException, SexoIncompativelException, TurmaFechadaException {
-        if (turma.getDadosTurma().getFaixa().permiteIdade(aluno.getDadosPessoais().getIdade())) {
-        } else{
-            throw new IdadeIncompativelException();
-        }
-        if (turma.getDadosTurma().getNaipe().name().equals(aluno.getDadosPessoais().getSexo().name()) || turma.getDadosTurma().getNaipe().name().equals("MISTO")) {
-        } else{
-            throw new SexoIncompativelException();
-        }
-        if (turma.getStatus().equals(StatusTurma.TURMA_ABERTA)) {
-            alteraTurma(turma, aluno);
-        } else {
-            throw new TurmaFechadaException();
-        }
-    }
 
     public void inativaAluno(Aluno aluno){
         if(aluno.getStatus().equals(Status.SELECIONADO) || aluno.getStatus().equals(Status.MATRICULADO)){
@@ -63,16 +44,16 @@ public class AlunoManager {
         aluno.setStatus(Status.MATRICULADO);
     }
 
-    public void alteraTurma(Turma novaTurma, Aluno aluno){
-
-        verificarElegibilidade(novaTurma, aluno);
-
+    public void alteraTurma(Turma turma, Aluno aluno){
         if(aluno.getStatus().equals(Status.INSCRITO) || aluno.getStatus().equals(Status.INATIVADO)){
-            aluno.getTurma().getInscritos().remove(aluno);
+            if(aluno.getTurma() != null){
+                aluno.getTurma().getInscritos().remove(aluno);
+            }
         }else{
             aluno.getTurma().getMatriculados().remove(aluno);
         }
+        aluno.setTurma(turma);
         aluno.setStatus(Status.INSCRITO);
-        novaTurma.getInscritos().add(aluno);
+        turma.getInscritos().add(aluno);
     }
 }

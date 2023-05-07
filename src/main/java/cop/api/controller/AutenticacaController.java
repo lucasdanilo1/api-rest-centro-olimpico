@@ -24,14 +24,10 @@ public class AutenticacaController {
     private TokenService tokenService;
 
     @PostMapping("login")
-    public ResponseEntity efetuarLogin(@RequestBody @Valid DadosValidacao dados){
-
-        //spring
+    public ResponseEntity<String> efetuarLogin(@RequestBody @Valid DadosValidacao dados){
         var authenticationToken = new UsernamePasswordAuthenticationToken(dados.getLogin(), dados.getSenha());
         var authentication = manager.authenticate(authenticationToken);
-
         var token = tokenService.gerarToken((Usuario) authentication.getPrincipal());
-
         return ResponseEntity.ok(token);
     }
 

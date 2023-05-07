@@ -1,20 +1,18 @@
-package cop.api.model.Aluno.DTO;
+package cop.api.model.Turma.DTO;
 
 import cop.api.model.Aluno.enums.Etnia;
 import cop.api.model.Aluno.enums.Sexo;
 import cop.api.model.Aluno.enums.Status;
-import cop.api.model.Turma.enums.Modalidade;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class FiltroAlunos {
+public class FiltroAlunosNaTurma {
 
     String nome;
     Etnia etnia;
     Sexo sexo;
-    Modalidade modalidade;
     Status status;
     String cpf;
 

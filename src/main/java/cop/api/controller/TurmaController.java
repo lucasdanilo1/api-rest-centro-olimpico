@@ -3,11 +3,12 @@ package cop.api.controller;
 import cop.api.model.Aluno.DTO.DadosListagemAluno;
 import cop.api.model.Turma.*;
 import cop.api.model.Turma.DTO.DadosAtualizaTurma;
-import cop.api.model.Turma.DTO.FiltroTurmas;
+import cop.api.model.Turma.DTO.FiltroAlunosNaTurma;
 import cop.api.model.Turma.DTO.TurmaDetalhada;
-import cop.api.repository.AlunoRepositoryImpl;
-import cop.api.repository.TurmaRepositoryImpl;
+import cop.api.repository.AlunoRepository;
+import cop.api.repository.TurmaRepository;
 import cop.api.service.TurmaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,13 @@ import java.util.List;
 
 @Controller
 @RequestMapping("sistema/turmas")
+@SecurityRequirement(name = "bearer-key")
 public class TurmaController {
 
     @Autowired
-    TurmaRepositoryImpl repository;
+    TurmaRepository repository;
     @Autowired
-    AlunoRepositoryImpl alunoRepository;
+    AlunoRepository alunoRepository;
     @Autowired
     TurmaService service;
 
@@ -44,10 +46,10 @@ public class TurmaController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<List<DadosListagemAluno>> filtroListaDeAlunosNaTurma(@PathVariable Long id, @RequestBody FiltroTurmas filtros){
-        Turma turma = repository.getReferenceById(id);
-        List<DadosListagemAluno> alunos = alunoRepository.findByIdNomeModalidadeStatus
-                (id, filtros.getNome(), turma.getDadosTurma().getModalidade(), filtros.getStatus()).stream().map(DadosListagemAluno::new).toList();
+    public ResponseEntity<List<DadosListagemAluno>> filtroListaDeAlunosNaTurma(@PathVariable Long id, @RequestBody FiltroAlunosNaTurma filtros){
+        List<DadosListagemAluno> alunos = alunoRepository.findByFiltrosNaTurma
+                (id, filtros.getNome(), filtros.getEtnia(), filtros.getSexo(), filtros.getStatus(), filtros.getCpf())
+                .stream().map(DadosListagemAluno::new).toList();
         return ResponseEntity.ok(alunos);
     }
 

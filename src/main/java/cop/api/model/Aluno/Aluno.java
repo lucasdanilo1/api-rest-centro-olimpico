@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import cop.api.service.VerificadorDeElegibilidadeDeAlunoEmTurma;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,6 +30,10 @@ public class Aluno {
     private Turma turma;
     @Enumerated(EnumType.STRING)
     private Status status;
+    @Transient
+    AlunoManager manager = new AlunoManager();
+    @Transient
+    VerificadorDeElegibilidadeDeAlunoEmTurma verificador  = new VerificadorDeElegibilidadeDeAlunoEmTurma();
 
     public Aluno(DadosCadastroAluno dados){
         setAtivo(true);
@@ -37,6 +42,11 @@ public class Aluno {
         Date data = new Date();
         this.dataEnvio = formatter.format(data);
         this.dadosPessoais = new DadosPessoais(dados);
+    }
+
+    public void setTurma(Turma turma) {
+        verificador.verificarElegibilidade(turma, this);
+        this.turma = turma;
     }
 
     public void setAtivo(boolean ativo) {

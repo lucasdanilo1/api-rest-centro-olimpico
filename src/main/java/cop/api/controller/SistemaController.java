@@ -6,9 +6,10 @@ import cop.api.model.Turma.DTO.DadosCadastroTurma;
 import cop.api.model.Turma.DTO.DadosListagemTurma;
 import cop.api.model.Turma.DTO.FiltroTurmas;
 import cop.api.model.Turma.DTO.TurmaDetalhada;
-import cop.api.repository.AlunoRepositoryImpl;
+import cop.api.repository.AlunoRepository;
 import cop.api.repository.TurmaRepository;
 import cop.api.model.Turma.Turma;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +22,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("sistema")
+@SecurityRequirement(name = "bearer-key")
 public class SistemaController {
 
     @Autowired
-    AlunoRepositoryImpl alunoRepository;
+    AlunoRepository alunoRepository;
     @Autowired
     TurmaRepository turmaRepository;
 
     @Transactional
     @PostMapping("novaTurma")
-    public ResponseEntity novaTurma(@RequestBody @Valid DadosCadastroTurma dados, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<TurmaDetalhada> novaTurma(@RequestBody @Valid DadosCadastroTurma dados, UriComponentsBuilder uriBuilder) {
         Turma turma = new Turma(dados);
         turmaRepository.save(turma);
         var uri = uriBuilder.path("sistema/turmas/{id}").buildAndExpand(turma.getId()).toUri();
@@ -57,7 +59,8 @@ public class SistemaController {
 
     @PostMapping("listaInscritos")
     public ResponseEntity<List<DadosListagemAluno>> listaInscritosFiltrada(@RequestBody FiltroAlunos dados){
-        var alunos = alunoRepository.findByTodosFiltros(dados.getNome(), dados.getModalidade(), dados.getStatus(), dados.getEtnia(), dados.getSexo()).stream().map(DadosListagemAluno::new).toList();
+        var alunos = alunoRepository.findByFiltros(dados.getNome(), dados.getModalidade(), dados.getStatus(), dados.getEtnia(), dados.getSexo(), dados.getCpf())
+                .stream().map(DadosListagemAluno::new).toList();
         return ResponseEntity.ok(alunos);
     }
 

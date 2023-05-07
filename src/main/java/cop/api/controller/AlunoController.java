@@ -3,8 +3,9 @@ package cop.api.controller;
 import cop.api.model.Aluno.Aluno;
 import cop.api.model.Aluno.DTO.AlunoDetalhado;
 import cop.api.model.Aluno.DTO.DadosAtualizaAluno;
-import cop.api.repository.AlunoRepositoryImpl;
+import cop.api.repository.AlunoRepository;
 import cop.api.service.AlunoService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("sistema/inscritos")
+@SecurityRequirement(name = "bearer-key")
 public class AlunoController {
 
     @Autowired
-    private AlunoRepositoryImpl repository;
+    private AlunoRepository repository;
     @Autowired
     private AlunoService service;
 

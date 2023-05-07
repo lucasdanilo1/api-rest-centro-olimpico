@@ -20,21 +20,27 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long> {
     @Query("SELECT a FROM Aluno a WHERE a.dadosPessoais.nome like %?1%")
     List<Aluno> findByNome(String nome);
 
-    @Query("SELECT a " +
-            "FROM Aluno a " +
-            "WHERE (:id IS NULL OR a.turma.id = :id)" +
-            " AND (:nome IS NULL OR a.dadosPessoais.nome LIKE %:nome%)" +
-            " AND (:modalidade IS NULL OR a.turma.dadosTurma.modalidade = :modalidade)" +
-            " AND (:status IS NULL OR a.statusAluno = :status)")
-    List<Aluno> findByIdNomeModalidadeStatus(Long id, String nome, Modalidade modalidade, Status status);
-
-    @Query("SELECT a " +
-            "FROM Aluno a " +
-            "WHERE (:nome IS NULL OR a.dadosPessoais.nome LIKE %:nome%)" +
-            " AND (:modalidade IS NULL OR a.turma.dadosTurma.modalidade = :modalidade)" +
-            " AND (:status IS NULL OR a.statusAluno = :status)" +
-            " AND (:etnia IS NULL OR a.dadosPessoais.etnia = :etnia)" +
-            " AND (:sexo IS NULL OR a.dadosPessoais.sexo = :sexo)")
-    List<Aluno> findByTodosFiltros(String nome, Modalidade modalidade, Status status, Etnia etnia, Sexo sexo);
+    @Query("""
+            SELECT a
+            FROM Aluno a
+            WHERE a.turma.id = :id
+            AND (:nome IS NULL OR a.dadosPessoais.nome LIKE %:nome%)
+            AND (:status IS NULL OR a.status = :status)
+            AND (:etnia IS NULL OR a.dadosPessoais.etnia = :etnia)
+            AND (:sexo IS NULL OR a.dadosPessoais.sexo = :sexo)
+            AND (:cpf IS NULL OR a.dadosPessoais.cpf = :cpf)
+            """)
+    List<Aluno> findByFiltrosNaTurma(Long id, String nome, Etnia etnia, Sexo sexo, Status status, String cpf);
+    @Query("""
+            SELECT a
+            FROM Aluno a
+            WHERE (:nome IS NULL OR a.dadosPessoais.nome LIKE %:nome%)
+            AND (:modalidade IS NULL OR a.turma.dadosTurma.modalidade = :modalidade)
+            AND (:status IS NULL OR a.status = :status)
+            AND (:etnia IS NULL OR a.dadosPessoais.etnia = :etnia)
+            AND (:sexo IS NULL OR a.dadosPessoais.sexo = :sexo)
+            AND (:cpf IS NULL OR a.dadosPessoais.cpf = :cpf)
+            """)
+    List<Aluno> findByFiltros(String nome, Modalidade modalidade, Status status, Etnia etnia, Sexo sexo, String cpf);
 
 }
