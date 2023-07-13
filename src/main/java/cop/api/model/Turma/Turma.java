@@ -36,6 +36,10 @@ public class Turma {
         this.dadosTurma = new DadosTurma(dados);
     }
 
+    public void setStatus(StatusTurma status) {
+        this.status = status;
+    }
+
     public List<Aluno> getInscritos() {
         return inscritos;
     }

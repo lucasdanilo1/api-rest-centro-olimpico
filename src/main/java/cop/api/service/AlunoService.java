@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class AlunoService {
 
     @Autowired
-    AlunoManager manager;
+    private AlunoManager manager;
 
     public void ativa(Aluno aluno) {
         manager.ativaAluno(aluno);

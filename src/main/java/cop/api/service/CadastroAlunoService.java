@@ -19,6 +19,13 @@ public class CadastroAlunoService {
     @Autowired
     AlunoService service;
 
+    @Autowired
+    public CadastroAlunoService(AlunoRepository alunoRepository, TurmaRepository turmaRepository, AlunoService service){
+        this.alunoRepository = alunoRepository;
+        this.turmaRepository = turmaRepository;
+        this.service = service;
+    }
+
     public Aluno cadastro(DadosCadastroAluno dados) {
         if(!turmaRepository.existsById(dados.getTurmaId())){
             throw new RuntimeException("Id da turma não existe");

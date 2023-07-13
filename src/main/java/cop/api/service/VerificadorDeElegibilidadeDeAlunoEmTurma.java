@@ -5,6 +5,7 @@ import cop.api.model.Aluno.Aluno;
 import cop.api.model.Turma.Turma;
 import cop.api.model.Turma.enums.StatusTurma;
 import org.springframework.stereotype.Component;
+
 @Component
 public class VerificadorDeElegibilidadeDeAlunoEmTurma {
     public void verificarElegibilidade(Turma turma, Aluno aluno) throws ValidacaoAlunoParaTurmaException {
